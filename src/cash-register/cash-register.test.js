@@ -1,7 +1,7 @@
 import { checkCashRegister } from '.';
 
 describe('checkCashRegister', () => {
-  test('examples', () => {
+  test('open', () => {
     expect(
       checkCashRegister(19.5, 20, [
         ['PENNY', 1.01],
@@ -40,7 +40,9 @@ describe('checkCashRegister', () => {
         ['PENNY', 0.04]
       ]
     });
+  });
 
+  test('insufficient funds', () => {
     expect(
       checkCashRegister(19.5, 20, [
         ['PENNY', 0.01],
@@ -68,7 +70,8 @@ describe('checkCashRegister', () => {
         ['ONE HUNDRED', 0]
       ])
     ).toBe({ status: 'INSUFFICIENT_FUNDS', change: [] });
-
+  });
+  test('closed', () => {
     expect(
       checkCashRegister(19.5, 20, [
         ['PENNY', 0.5],
