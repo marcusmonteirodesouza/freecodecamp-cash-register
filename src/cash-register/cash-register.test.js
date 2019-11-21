@@ -1,4 +1,82 @@
+import { CashRegister, CurrencyUnit } from './cash-register';
 import { checkCashRegister } from '.';
+
+describe('CashRegister', () => {
+  test('constructor', () => {
+    const cashRegister = new CashRegister();
+    expect(Object.keys(cashRegister.currencyUnits)).toStrictEqual(
+      CurrencyUnit.validCurrencyUnitNames
+    );
+  });
+
+  describe('operations', () => {
+    let cashRegister;
+    let penny;
+    let nickel;
+    let dime;
+    let quarter;
+    let dollar;
+    let five;
+    let ten;
+    let twenty;
+    let oneHundred;
+    let units;
+
+    beforeEach(() => {
+      cashRegister = new CashRegister();
+
+      penny = new CurrencyUnit(CurrencyUnit.PENNY);
+      nickel = new CurrencyUnit(CurrencyUnit.NICKEL);
+      dime = new CurrencyUnit(CurrencyUnit.DIME);
+      quarter = new CurrencyUnit(CurrencyUnit.QUARTER);
+      dollar = new CurrencyUnit(CurrencyUnit.DOLLAR);
+      five = new CurrencyUnit(CurrencyUnit.FIVE);
+      ten = new CurrencyUnit(CurrencyUnit.TEN);
+      twenty = new CurrencyUnit(CurrencyUnit.TWENTY);
+      oneHundred = new CurrencyUnit(CurrencyUnit.ONE_HUNDRED);
+
+      units = [
+        penny,
+        nickel,
+        dime,
+        quarter,
+        dollar,
+        five,
+        ten,
+        twenty,
+        oneHundred
+      ];
+
+      units.forEach(unit => {
+        cashRegister.addCurrencyUnit(unit);
+      });
+    });
+
+    test('addCurrencyUnit', () => {
+      expect(cashRegister.currencyUnits.PENNY[0]).toBe(penny);
+      expect(cashRegister.currencyUnits.ONE_HUNDRED[0]).toBe(oneHundred);
+
+      cashRegister.addCurrencyUnit(dime);
+      expect(cashRegister.currencyUnits.DIME.length).toBe(2);
+    });
+
+    test('removeCurrencyUnit', () => {
+      cashRegister.removeCurrencyUnit(CurrencyUnit.DOLLAR);
+      expect(cashRegister.currencyUnits.DOLLAR.length).toBe(0);
+      cashRegister.removeCurrencyUnit(CurrencyUnit.DOLLAR);
+      expect(cashRegister.currencyUnits.DOLLAR.length).toBe(0);
+
+      cashRegister.removeCurrencyUnit(CurrencyUnit.TWENTY);
+      expect(cashRegister.currencyUnits.TWENTY.length).toBe(0);
+    });
+
+    test('totalCash', () => {
+      expect(cashRegister.totalCash()).toBe(
+        units.map(u => u.value).reduce((a, b) => a + b)
+      );
+    });
+  });
+});
 
 describe('checkCashRegister', () => {
   test('open', () => {
