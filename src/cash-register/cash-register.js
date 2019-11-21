@@ -180,10 +180,15 @@ export class CashRegister {
     this.currencyUnits[currencyUnit.currencyUnitName].push(currencyUnit);
   };
 
-  removeCurrencyUnit = currencyUnitName => {
-    if (this.currencyUnits[currencyUnitName]) {
-      this.currencyUnits[currencyUnitName].pop();
-    }
+  /**
+   * @returns {CurrencyUnit | null} takes and returns a CurrencyUnit from the register if there is any
+   *
+   * @memberof CashRegister
+   */
+  takeCurrencyUnit = currencyUnitName => {
+    return this.currencyUnits[currencyUnitName].length > 0
+      ? this.currencyUnits[currencyUnitName].pop()
+      : null;
   };
 
   /**

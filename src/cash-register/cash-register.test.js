@@ -60,14 +60,18 @@ describe('CashRegister', () => {
       expect(cashRegister.currencyUnits.DIME.length).toBe(2);
     });
 
-    test('removeCurrencyUnit', () => {
-      cashRegister.removeCurrencyUnit(CurrencyUnit.DOLLAR);
+    test('takeCurrencyUnit', () => {
+      let unit = cashRegister.takeCurrencyUnit(CurrencyUnit.DOLLAR);
       expect(cashRegister.currencyUnits.DOLLAR.length).toBe(0);
-      cashRegister.removeCurrencyUnit(CurrencyUnit.DOLLAR);
-      expect(cashRegister.currencyUnits.DOLLAR.length).toBe(0);
+      expect(unit).toBe(dollar);
 
-      cashRegister.removeCurrencyUnit(CurrencyUnit.TWENTY);
+      unit = cashRegister.takeCurrencyUnit(CurrencyUnit.DOLLAR);
+      expect(cashRegister.currencyUnits.DOLLAR.length).toBe(0);
+      expect(unit).toBeNull();
+
+      unit = cashRegister.takeCurrencyUnit(CurrencyUnit.TWENTY);
       expect(cashRegister.currencyUnits.TWENTY.length).toBe(0);
+      expect(unit).toBe(twenty);
     });
 
     test('totalCash', () => {
