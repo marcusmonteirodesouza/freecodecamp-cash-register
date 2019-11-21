@@ -1,0 +1,48 @@
+{
+  "name": "freecodecamp-cash-register",
+  "version": "1.0.0",
+  "description": "My solution to FreeCodeCamp's Cash Register challenge",
+  "scripts": {
+    "format": "prettier --write ./**/*.{js,json,md}",
+    "lint": "xo --env=jest --fix",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "Marcus Vinicius Monteiro de Souza",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/plugin-proposal-class-properties": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
+    "babel-eslint": "^10.0.3",
+    "babel-jest": "^24.9.0",
+    "husky": "^3.1.0",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.4.3",
+    "prettier": "^1.19.1",
+    "xo": "^0.25.3"
+  },
+  "jest": {
+    "collectCoverage": true
+  },
+  "xo": {
+    "prettier": true,
+    "parser": "babel-eslint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "./**/*.{json,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "./**/*.{js}": [
+      "xo --env=jest --fix",
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
