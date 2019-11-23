@@ -1,230 +1,138 @@
-/**
- * @constructor {string} currencyUnitName must be a valid currency unit name
- */
 export class CurrencyUnit {
-  static PENNY = 'PENNY';
-  static NICKEL = 'NICKEL';
-  static DIME = 'DIME';
-  static QUARTER = 'QUARTER';
-  static DOLLAR = 'DOLLAR';
-  static FIVE = 'FIVE';
-  static TEN = 'TEN';
-  static TWENTY = 'TWENTY';
-  static ONE_HUNDRED = 'ONE_HUNDRED';
-
-  /**
-   * @type {Object} an object containing the value of each currency unit name as key
-   *
-   * @static
-   * @memberof CurrencyUnit
-   */
-  static currencyUnitTable = {
+  static values = {
     PENNY: 0.01,
     NICKEL: 0.05,
     DIME: 0.1,
     QUARTER: 0.25,
-    DOLLAR: 1,
+    ONE: 1,
     FIVE: 5,
     TEN: 10,
     TWENTY: 20,
-    ONE_HUNDRED: 100
+    'ONE HUNDRED': 100
   };
 
-  /**
-   * @type {Array} an Array of strings containing the valid currency unit names
-   *
-   * @static
-   * @memberof CurrencyUnit
-   */
-  static validCurrencyUnitNames = Object.keys(this.currencyUnitTable);
-
-  /**
-   * @type {string} the name of this CurrencyUnit
-   *
-   * @example 'DOLLAR'
-   *
-   * @memberof CurrencyUnit
-   */
-  currencyUnitName;
-
-  /**
-   * Validates if the argument is a valid USA currency unit name
-   * @param {string} currencyUnitName
-   * @returns {boolean}
-   */
-  static isValidCurrencyUnitName = currencyUnitName => {
-    currencyUnitName = currencyUnitName.toUpperCase().trim();
-
-    return CurrencyUnit.validCurrencyUnitNames.includes(currencyUnitName);
-  };
-
-  /**
-   *
-   * @param {string} currencyUnitName
-   */
-  constructor(currencyUnitName) {
-    currencyUnitName = currencyUnitName.trim().replace(/\s\s+/g, '_');
-
-    if (!CurrencyUnit.isValidCurrencyUnitName(currencyUnitName)) {
-      throw new Error(
-        `invalid currencyUnitName ${currencyUnitName}. must be one of [${Object.values(
-          CurrencyUnit.validCurrencyUnitNames
-        ).join(', ')}]`
-      );
-    }
-
-    this.currencyUnitName = currencyUnitName;
+  static unitNames() {
+    return Object.keys(this.values);
   }
 
-  /**
-   * @returns {number} the value of this CurrencyUnit
-   *
-   * @example 0.25
-   *
-   * @memberof CurrencyUnit
-   */
-  value = () => this.currencyUnitTable[this.currencyUnitName];
-
-  /**
-   * Returns true if this CurrencyUnit can be considered bigger than the argument
-   *
-   * @param {CurrencyUnit} currencyUnit
-   *
-   * @returns {boolean}
-   *
-   * @memberof CurrencyUnit
-   */
-  gt = currencyUnit => {
-    return this.value > currencyUnit.value;
-  };
-
-  /**
-   * Returns true if this CurrencyUnit can be considered equal than the argument
-   *
-   * @param {CurrencyUnit} currencyUnit
-   *
-   * @returns {boolean}
-   *
-   * @memberof CurrencyUnit
-   */
-  eq = currencyUnit => {
-    return this.value === currencyUnit.value;
-  };
-
-  /**
-   * Returns true if this CurrencyUnit can be considered bigger or equal than the argument
-   *
-   * @param {CurrencyUnit} currencyUnit
-   *
-   * @returns {boolean}
-   *
-   * @memberof CurrencyUnit
-   */
-  gte = currencyUnit => {
-    return this.value >= currencyUnit.value;
-  };
-
-  /**
-   * Returns true if this CurrencyUnit can be considered smaller than the argument
-   *
-   * @param {CurrencyUnit} currencyUnit
-   *
-   * @returns {boolean}
-   *
-   * @memberof CurrencyUnit
-   */
-  lt = currencyUnit => {
-    return this.value < currencyUnit.value;
-  };
-
-  /**
-   * Returns true if this CurrencyUnit can be considered smaller or equal than the argument
-   *
-   * @param {CurrencyUnit} currencyUnit
-   *
-   * @returns {boolean}
-   *
-   * @memberof CurrencyUnit
-   */
-  lte = currencyUnit => {
-    return this.value <= currencyUnit.value;
-  };
-}
-
-export class CashRegister {
-  /**
-   * @type {string: [CurrencyUnit]} the currency units currently in the register, organized by name
-   *
-   * @memberof CashRegister
-   */
-  currencyUnits = {};
-
-  constructor() {
-    CurrencyUnit.validCurrencyUnitNames.forEach(name => {
-      this.currencyUnits[name] = [];
-    });
+  static _treatUnitName(unitName) {
+    return unitName.trim().replace(/\s\s+/g, ' ');
   }
 
-  /**
-   * @param {CurrencyUnit} currencyUnit an instance of the CurrencyUnit class
-   *
-   * @memberof CashRegister
-   */
-  addCurrencyUnit = currencyUnit => {
-    if (!(currencyUnit instanceof CurrencyUnit)) {
-      throw new TypeError(
-        `argument must be a CurrencyUnit. Received ${currencyUnit}`
-      );
+  static isValidUnitName(unitName) {
+    if (Object.keys(this.values).includes(this._treatUnitName(unitName))) {
+      return true;
     }
 
-    this.currencyUnits[currencyUnit.currencyUnitName].push(currencyUnit);
-  };
+    return false;
+  }
 
-  /**
-   * @returns {CurrencyUnit | null} takes and returns a CurrencyUnit from the register if there is any
-   *
-   * @memberof CashRegister
-   */
-  takeCurrencyUnit = currencyUnitName => {
-    return this.currencyUnits[currencyUnitName].length > 0
-      ? this.currencyUnits[currencyUnitName].pop()
-      : null;
-  };
+  static getValue(unitName) {
+    if (!this.isValidUnitName(unitName)) {
+      throw new Error(`invalid unitName ${unitName}`);
+    }
 
-  /**
-   * @returns {number} the total cash in the CashRegister
-   *
-   * @memberof CashRegister
-   */
-  totalCash = () => {
-    return Object.values(this.currencyUnits)
-      .flat()
-      .map(unit => unit.value)
-      .reduce((a, b) => a + b);
-  };
+    return this.values[unitName];
+  }
+
+  static addFrom(value, unitName) {
+    return Number((value + this.getValue(unitName)).toFixed(2));
+  }
+
+  static subtractFrom(value, unitName) {
+    return Number((value - this.getValue(unitName)).toFixed(2));
+  }
 }
 
 /**
+ * Solution for https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/javascript-algorithms-and-data-structures-projects/cash-register
  *
  * @param {number} price
  * @param {number} cash
- * @param {Array} cid a 2D Array with format [[string, amount]] where string must
- * be one valid argument to construct a CurrencyUnit class.
+ * @param {[[string, number]]} cid cash in drawer
  *
- * @returns {Object} an object with the following format:
- * {
- *  status: 'OPEN' | 'INSUFFICIENT_FUNDS' | 'CLOSED',
- *  change: a 2D Array in the same format as the `cid` argument
- * }
+ * @returns {string, [[string, number]]} an object with status: "OPEN" | "INSUFFICIENT_FUNDS" | "CLOSED" and the `change` in currency units
  *
  * @example
- * checkCashRegister(19.5, 20,
- * [['PENNY', 1.01], ['NICKEL', 2.05], ['DIME', 3.1],
- * ['QUARTER', 4.25], ['ONE', 90], ['FIVE', 55], ['TEN', 20],
- * ['TWENTY', 60], ['ONE HUNDRED', 100]]) === { status: 'OPEN', change: [['QUARTER', 0.5]] }
+ * > checkCashRegister(3.26, 100, [['PENNY', 1.01], ['NICKEL', 2.05], ['DIME', 3.1], ['QUARTER', 4.25], ['ONE', 90], ['FIVE', 55], ['TEN', 20], ['TWENTY', 60], ['ONE HUNDRED', 100]])
+ *
+ * {
+ *  status: 'OPEN',
+ *	change: [
+ *    ['TWENTY', 60],
+ *    ['TEN', 20],
+ *	  ['FIVE', 15],
+ *		['ONE', 1],
+ *		['QUARTER', 0.5],
+ *		['DIME', 0.2],
+ *		['PENNY', 0.04]
+ *	]
+ * }
  */
 export const checkCashRegister = (price, cash, cid) => {
-  const changeAmount = cash - price;
-  console.log(changeAmount);
-  return cid;
+  let changeAmount = cash - price;
+
+  if (changeAmount < 0) {
+    throw new Error(
+      `cash must be greater than price. Received cash: ${cash}, price: ${price}`
+    );
+  }
+
+  const makeResult = (status, change) => {
+    return {
+      status,
+      change
+    };
+  };
+
+  const _cid = cid;
+
+  // Important!
+  _cid.sort((a, b) => {
+    return CurrencyUnit.getValue(b[0]) - CurrencyUnit.getValue(a[0]);
+  });
+
+  const change = [];
+
+  for (const cashDrawer of _cid) {
+    const unitName = cashDrawer[0];
+    const changeUnit = [unitName, 0];
+
+    while (
+      changeAmount > 0 &&
+      changeAmount >= CurrencyUnit.getValue(unitName) &&
+      cashDrawer[1] > 0
+    ) {
+      changeAmount = CurrencyUnit.subtractFrom(changeAmount, unitName);
+      cashDrawer[1] = CurrencyUnit.subtractFrom(cashDrawer[1], unitName);
+      changeUnit[1] = CurrencyUnit.addFrom(changeUnit[1], unitName);
+    }
+
+    change.push(changeUnit);
+  }
+
+  if (changeAmount > 0) {
+    return makeResult('INSUFFICIENT_FUNDS', []);
+  }
+
+  const cidTotal = cid => {
+    return cid.map(cashDrawer => cashDrawer[1]).reduce((a, b) => a + b);
+  };
+
+  if (cidTotal(_cid) > 0) {
+    // Descending
+    change.sort((a, b) => {
+      return CurrencyUnit.getValue(b[0]) - CurrencyUnit.getValue(a[0]);
+    });
+    return makeResult(
+      'OPEN',
+      change.filter(cashDrawer => cashDrawer[1] > 0)
+    );
+  }
+
+  // Ascending
+  change.sort((a, b) => {
+    return CurrencyUnit.getValue(a[0]) - CurrencyUnit.getValue(b[0]);
+  });
+  return makeResult('CLOSED', change);
 };

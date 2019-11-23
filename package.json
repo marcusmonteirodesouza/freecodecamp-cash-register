@@ -27,11 +27,14 @@
   },
   "xo": {
     "prettier": true,
-    "parser": "babel-eslint"
+    "parser": "babel-eslint",
+    "rules": {
+      "no-labels": "warn"
+    }
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm test && lint-staged"
     }
   },
   "lint-staged": {
